@@ -11175,7 +11175,7 @@ func (a *DefaultApiService) StreamDiff_41(path string, localVarOptionals map[str
  @param optional (nil or map[string]interface{}) with one or more of:
 	 @param "at" (string) the commit ID or ref (e.g. a branch or tag) to list the files at.              If not specified the default branch will be used instead.
  @return */
-func (a *DefaultApiService) StreamFiles(localVarOptionals map[string]interface{}) (*APIResponse, error) {
+func (a *DefaultApiService) StreamFiles(project, repository string, localVarOptionals map[string]interface{}) (*APIResponse, error) {
 	var (
 		localVarHTTPMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -11185,6 +11185,8 @@ func (a *DefaultApiService) StreamFiles(localVarOptionals map[string]interface{}
 
 	// create path and map variables
 	localVarPath := a.client.cfg.BasePath + "/api/1.0/projects/{projectKey}/repos/{repositorySlug}/files"
+	localVarPath = strings.Replace(localVarPath, "{"+"projectKey"+"}", fmt.Sprintf("%v", project), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"repositorySlug"+"}", fmt.Sprintf("%v", repository), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
