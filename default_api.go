@@ -11175,7 +11175,65 @@ func (a *DefaultApiService) StreamDiff_41(path string, localVarOptionals map[str
  @param optional (nil or map[string]interface{}) with one or more of:
 	 @param "at" (string) the commit ID or ref (e.g. a branch or tag) to list the files at.              If not specified the default branch will be used instead.
  @return */
-func (a *DefaultApiService) StreamFiles(project, repository string, localVarOptionals map[string]interface{}) (*APIResponse, error) {
+func (a *DefaultApiService) StreamFiles(project, repository string) (*APIResponse, error) {
+	var (
+		localVarHTTPMethod = strings.ToUpper("Get")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/api/1.0/projects/{projectKey}/repos/{repositorySlug}/files"
+	localVarPath = strings.Replace(localVarPath, "{"+"projectKey"+"}", fmt.Sprintf("%v", project), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"repositorySlug"+"}", fmt.Sprintf("%v", repository), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	r, err := a.client.prepareRequest(a.client.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHTTPResponse == nil {
+		return NewAPIResponseWithError(localVarHTTPResponse, err)
+	}
+	defer localVarHTTPResponse.Body.Close()
+	if localVarHTTPResponse.StatusCode >= 300 {
+		bodyBytes, _ := ioutil.ReadAll(localVarHTTPResponse.Body)
+		return NewAPIResponseWithError(localVarHTTPResponse, reportError("Status: %v, Body: %s", localVarHTTPResponse.Status, bodyBytes))
+	}
+
+	return NewBitbucketAPIResponse(localVarHTTPResponse)
+}
+
+/* DefaultApiService
+ Retrieve a page of files from particular directory of a repository. The search is done recursively, so all files  from any sub-directory of the specified directory will be returned.  &lt;p&gt;  The authenticated user must have &lt;strong&gt;REPO_READ&lt;/strong&gt; permission for the specified repository to call this  resource.
+ * @param ctx context.Context for authentication, logging, tracing, etc.
+ @param optional (nil or map[string]interface{}) with one or more of:
+	 @param "at" (string) the commit ID or ref (e.g. a branch or tag) to list the files at.              If not specified the default branch will be used instead.
+ @return */
+ func (a *DefaultApiService) StreamFilesWithOptions(project, repository string, localVarOptionals map[string]interface{}) (*APIResponse, error) {
 	var (
 		localVarHTTPMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}

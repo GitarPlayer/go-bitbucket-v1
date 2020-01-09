@@ -1,4 +1,5 @@
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
+github.com/GitarPlayer/go-bitbucket-v1 v0.0.0-20200109121539-09aa6e2c1f03/go.mod h1:kjiLkIO+18p0QNTb/+5ZuXbUDSLvqcBKXCxAN17nyAM=
 github.com/gfleury/go-bitbucket-v1 v0.0.0-20191103141755-b0145373d4ed h1:ZuD7xR5o8/1ESMDiyo4+zpv9YSUGHQUK/AItPcuZ0Vg=
 github.com/gfleury/go-bitbucket-v1 v0.0.0-20191103141755-b0145373d4ed/go.mod h1:Se0U4YUmRkRAOh8kD7KXz+3VCUBmvTFcdWP2QYYRjjc=
 github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=

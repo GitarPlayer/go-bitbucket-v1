@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+	"fmt"
 
 	"github.com/mitchellh/mapstructure"
 )
@@ -235,6 +236,10 @@ type Tag struct {
 	Hash            string `json:"hash"`
 }
 
+type File struct {
+	FileArray	string	`json:"files"`
+}
+
 // Branch contains git Branch information
 type Branch struct {
 	ID              string `json:"id"`
@@ -303,6 +308,14 @@ func GetCommitsResponse(r *APIResponse) ([]Commit, error) {
 // GetTagsResponse cast Tags into structure
 func GetTagsResponse(r *APIResponse) ([]Tag, error) {
 	var m []Tag
+	err := mapstructure.Decode(r.Values["values"], &m)
+	return m, err
+}
+
+// GetFilesResponse cast Files into structure
+func GetFilesResponse(r *APIResponse) ([]File, error) {
+	var m []File
+	fmt.Println(r.Values["values"])
 	err := mapstructure.Decode(r.Values["values"], &m)
 	return m, err
 }
