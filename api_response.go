@@ -225,7 +225,7 @@ type Diff struct {
 	WhiteSpace   string  `json:"whiteSpace"`
 }
 
-// Tag contaings git Tag information
+// Tag contains git Tag information
 type Tag struct {
 	ID              string `json:"id"`
 	DisplayID       string `json:"displayId"`
@@ -234,6 +234,11 @@ type Tag struct {
 	LatestChangeset string `json:"latestChangeset"`
 	Hash            string `json:"hash"`
 }	
+
+// FileContent contains file informations
+type FileContent struct {
+	Text			string `json:"text"`
+}
 
 // Branch contains git Branch information
 type Branch struct {
@@ -307,10 +312,17 @@ func GetTagsResponse(r *APIResponse) ([]Tag, error) {
 	return m, err
 }
 
-// GetFilesResponse cast Files into structure
+// GetFileContentResponse cast FileContent into structure
+func GetFileContentResponse(r *APIResponse) ([]FileContent, error) {
+	var m []FileContent
+	err := mapstructure.Decode(r.Values["lines"], &m)
+	
+	return m, err
+}
+
+// GetFilesResponse cast Files into string slice
 func GetFilesResponse(r *APIResponse) ([]string) {
 	var fileSlice []string	
-
 	if t, ok := r.Values["values"].([]interface {}); ok {
 		for _,file := range t {
             if f, ok := file.(string); ok {
@@ -318,9 +330,10 @@ func GetFilesResponse(r *APIResponse) ([]string) {
 			}
         }
 	}
-	
 	return fileSlice
 }
+
+
 
 // GetBranchesResponse cast Tags into structure
 func GetBranchesResponse(r *APIResponse) ([]Branch, error) {

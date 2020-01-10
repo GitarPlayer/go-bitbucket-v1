@@ -3878,14 +3878,14 @@ func (a *DefaultApiService) GetCommits_8(pullRequestID int64, localVarOptionals 
 	 @param "noContent" (string) if present and used with blame only the blame is retrieved instead of the contents.
  @return */
 func (a *DefaultApiService) GetContent(projectKey string, repositorySlug string, localVarOptionals map[string]interface{}) (*APIResponse, error) {
-	return a.getContentWithPath(projectKey, repositorySlug, "", localVarOptionals)
+	return a.GetContentWithPath(projectKey, repositorySlug, "", localVarOptionals)
 }
 
 func (a *DefaultApiService) GetContent_0(projectKey string, repositorySlug string, path string, localVarOptionals map[string]interface{}) (*APIResponse, error) {
-	return a.getContentWithPath(projectKey, repositorySlug, path, localVarOptionals)
+	return a.GetContentWithPath(projectKey, repositorySlug, path, localVarOptionals)
 }
 
-func (a *DefaultApiService) getContentWithPath(projectKey string, repositorySlug string, path string, localVarOptionals map[string]interface{}) (*APIResponse, error) {
+func (a *DefaultApiService) GetContentWithPath(projectKey string, repositorySlug string, path string, localVarOptionals map[string]interface{}) (*APIResponse, error) {
 	var (
 		localVarHTTPMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -3917,6 +3917,15 @@ func (a *DefaultApiService) getContentWithPath(projectKey string, repositorySlug
 	if err := typeCheckParameter(localVarOptionals["noContent"], "string", "noContent"); err != nil {
 		return nil, err
 	}
+	if err := typeCheckParameter(localVarOptionals["markup"], "string", "markup"); err != nil {
+		return nil, err
+	}
+	if err := typeCheckParameter(localVarOptionals["includeHeadingId"], "string", "includeHeadingId"); err != nil {
+		return nil, err
+	}
+	if err := typeCheckParameter(localVarOptionals["hardwrap"], "string", "hardwrap"); err != nil {
+		return nil, err
+	}
 
 	if localVarTempParam, localVarOk := localVarOptionals["at"].(string); localVarOk {
 		localVarQueryParams.Add("at", parameterToString(localVarTempParam, ""))
@@ -3929,6 +3938,15 @@ func (a *DefaultApiService) getContentWithPath(projectKey string, repositorySlug
 	}
 	if localVarTempParam, localVarOk := localVarOptionals["noContent"].(string); localVarOk {
 		localVarQueryParams.Add("noContent", parameterToString(localVarTempParam, ""))
+	}
+	if localVarTempParam, localVarOk := localVarOptionals["markup"].(string); localVarOk {
+		localVarQueryParams.Add("markup", parameterToString(localVarTempParam, ""))
+	}
+	if localVarTempParam, localVarOk := localVarOptionals["includeHeadingId"].(string); localVarOk {
+		localVarQueryParams.Add("includeHeadingId", parameterToString(localVarTempParam, ""))
+	}
+	if localVarTempParam, localVarOk := localVarOptionals["hardwrap"].(string); localVarOk {
+		localVarQueryParams.Add("hardwrap", parameterToString(localVarTempParam, ""))
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3953,6 +3971,67 @@ func (a *DefaultApiService) getContentWithPath(projectKey string, repositorySlug
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHTTPResponse == nil {
+		return NewAPIResponseWithError(localVarHTTPResponse, err)
+	}
+	defer localVarHTTPResponse.Body.Close()
+	if localVarHTTPResponse.StatusCode >= 300 {
+		bodyBytes, _ := ioutil.ReadAll(localVarHTTPResponse.Body)
+		return NewAPIResponseWithError(localVarHTTPResponse, reportError("Status: %v, Body: %s", localVarHTTPResponse.Status, bodyBytes))
+	}
+
+	return NewBitbucketAPIResponse(localVarHTTPResponse)
+}
+
+// This does not work yet, localVarPath is the correct path but somehow it still does not return the right answer (curl does retun the correct answer with the same path)
+func (a *DefaultApiService) GetRawContentWithPath(projectKey string, repositorySlug string, path string) (*APIResponse, error) {
+	var (
+		localVarHTTPMethod = strings.ToUpper("Get")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/api/1.0/projects/{projectKey}/repos/{repositorySlug}/raw"
+	localVarPath = strings.Replace(localVarPath, "{"+"projectKey"+"}", fmt.Sprintf("%v", projectKey), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"repositorySlug"+"}", fmt.Sprintf("%v", repositorySlug), -1)
+	if path != "" {
+		localVarPath = localVarPath + "/" + path
+	}
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+
+	r, err := a.client.prepareRequest(a.client.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(r)
+	localVarHTTPResponse, err := a.client.callAPI(r)
+
+	
 	if err != nil || localVarHTTPResponse == nil {
 		return NewAPIResponseWithError(localVarHTTPResponse, err)
 	}
@@ -7285,6 +7364,21 @@ func (a *DefaultApiService) GetTags(project, repository string, localVarOptional
 	if localVarTempParam, localVarOk := localVarOptionals["orderBy"].(string); localVarOk {
 		localVarQueryParams.Add("orderBy", parameterToString(localVarTempParam, ""))
 	}
+
+	if err := typeCheckParameter(localVarOptionals["limit"], "int", "limit"); err != nil {
+		return nil, err
+	}
+	if err := typeCheckParameter(localVarOptionals["start"], "int", "start"); err != nil {
+		return nil, err
+	}
+
+	if localVarTempParam, localVarOk := localVarOptionals["limit"].(int); localVarOk {
+		localVarQueryParams.Add("limit", parameterToString(localVarTempParam, ""))
+	}
+	if localVarTempParam, localVarOk := localVarOptionals["start"].(int); localVarOk {
+		localVarQueryParams.Add("start", parameterToString(localVarTempParam, ""))
+	}
+
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -11175,7 +11269,7 @@ func (a *DefaultApiService) StreamDiff_41(path string, localVarOptionals map[str
  @param optional (nil or map[string]interface{}) with one or more of:
 	 @param "at" (string) the commit ID or ref (e.g. a branch or tag) to list the files at.              If not specified the default branch will be used instead.
  @return */
-func (a *DefaultApiService) StreamFiles(project, repository string) (*APIResponse, error) {
+func (a *DefaultApiService) StreamFiles(project, repository string, localVarOptionals map[string]interface{}) (*APIResponse, error) {
 	var (
 		localVarHTTPMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -11191,6 +11285,20 @@ func (a *DefaultApiService) StreamFiles(project, repository string) (*APIRespons
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
+
+	if err := typeCheckParameter(localVarOptionals["limit"], "int", "limit"); err != nil {
+		return nil, err
+	}
+	if err := typeCheckParameter(localVarOptionals["start"], "int", "start"); err != nil {
+		return nil, err
+	}
+
+	if localVarTempParam, localVarOk := localVarOptionals["limit"].(int); localVarOk {
+		localVarQueryParams.Add("limit", parameterToString(localVarTempParam, ""))
+	}
+	if localVarTempParam, localVarOk := localVarOptionals["start"].(int); localVarOk {
+		localVarQueryParams.Add("start", parameterToString(localVarTempParam, ""))
+	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
