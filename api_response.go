@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+	"fmt"
 
 	"github.com/mitchellh/mapstructure"
 )
@@ -313,11 +314,17 @@ func GetTagsResponse(r *APIResponse) ([]Tag, error) {
 }
 
 // GetFileContentResponse cast FileContent into structure
-func GetFileContentResponse(r *APIResponse) ([]FileContent, error) {
+func GetFileContentResponse(r *APIResponse) (string, error) {
 	var m []FileContent
 	err := mapstructure.Decode(r.Values["lines"], &m)
-	
-	return m, err
+	// return m, err
+	var content string
+	for _, line := range m {
+		content += fmt.Sprintf("%v", line)
+		
+	}
+
+	return content, err
 }
 
 // GetFilesResponse cast Files into string slice
