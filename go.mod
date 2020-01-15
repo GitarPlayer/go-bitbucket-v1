@@ -8,3 +8,5 @@ require (
 	golang.org/x/net v0.0.0-20191108045252-6f6bbb1828be
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 )
+
+replace github.com/gfleury/go-bitbucket-v1 v0.0.0-20191103141755-b0145373d4ed => github.com/GitarPlayer/go-bitbucket-v1
